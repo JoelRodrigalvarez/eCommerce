@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.DecimalMin;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "CART")
 public class CartEntity {
 
     @Id
@@ -25,10 +23,11 @@ public class CartEntity {
 
     @Getter @Setter
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @Column
     private List<ProductEntity> products;
 
     @Getter @Setter
-    @DecimalMin(value = "0.0")
+    @Column
     private BigDecimal totalPrice; // Precio total del carrito
 
     public void addProduct(ProductEntity product) {
