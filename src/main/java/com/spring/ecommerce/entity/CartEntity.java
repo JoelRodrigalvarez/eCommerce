@@ -25,7 +25,7 @@ public class CartEntity {
         @Getter @Setter
         private BigDecimal totalPrice; // Precio total del carrito
 
-        @OneToMany(mappedBy = "cart")
+        @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
         @Getter @Setter
         private List<CartProduct> cartProducts = new ArrayList<>();
 
