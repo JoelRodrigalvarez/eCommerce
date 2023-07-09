@@ -15,17 +15,16 @@ import java.math.BigDecimal;
 @Table(name = "PRODUCT")
 public class ProductEntity {
     @Id
-    @Getter @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    @Getter @Setter
     private Long id;
 
+    @Column(name = "description")
     @Getter @Setter
     private String description;
 
+    @Column(name = "price")
     @Getter @Setter
-    private BigDecimal price; // Precio individual del producto
-
-    @ManyToOne
-    @Getter @Setter
-    private CartEntity cart;
+    private BigDecimal price;
 }

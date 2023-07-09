@@ -6,9 +6,15 @@ CREATE TABLE CART (
 CREATE TABLE PRODUCT (
     id INT AUTO_INCREMENT PRIMARY KEY,
     description VARCHAR(255),
-    price DECIMAL(10, 2),
-    cart_id VARCHAR(255),
-    FOREIGN KEY (cart_id) REFERENCES CART(cart_id)
+    price DECIMAL(10, 2)
+);
+
+CREATE TABLE CART_PRODUCT (
+  cart_id VARCHAR(255),
+  product_id INT,
+  PRIMARY KEY (cart_id, product_id),
+  FOREIGN KEY (cart_id) REFERENCES CART(cart_id),
+  FOREIGN KEY (product_id) REFERENCES PRODUCT(id)
 );
 
 -- Inserts para la tabla PRODUCT

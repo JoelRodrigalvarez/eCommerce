@@ -16,41 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "CART")
 public class CartEntity {
+        @Id
+        @Column(name = "cart_id")
+        @Getter @Setter
+        private String cartId;
 
-    @Id
-    @Getter @Setter
-    private String cartId;
+        @Column(name = "total_price")
+        @Getter @Setter
+        private BigDecimal totalPrice; // Precio total del carrito
 
-    @Getter @Setter
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    @Column
-    private List<ProductEntity> products;
+        @OneToMany(mappedBy = "cart")
+        @Getter @Setter
+        private List<CartProduct> cartProducts = new ArrayList<>();
 
-    @Getter @Setter
-    @Column
-    private BigDecimal totalPrice; // Precio total del carrito
-
-    public void addProduct(ProductEntity product) {
-        if (products == null) {
-            products = new ArrayList<>();
-        }
-        products.add(product);
-        product.setCart(this);
-
-        updateTotalPrice(); // Actualizar el precio total al agregar un producto
-    }
-
-    public void updateTotalPrice() {
-        totalPrice = BigDecimal.ZERO;
-        if (products != null) {
-            for (ProductEntity product : products) {
-                totalPrice = totalPrice.add(product.getPrice()); // Sumar el precio de cada producto al precio total
-            }
-
-        }
-    }
-
-    public CartEntity(String cartId) {
-        this.cartId = cartId;
-    }
 }
