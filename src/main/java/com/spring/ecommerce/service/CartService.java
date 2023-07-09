@@ -72,13 +72,19 @@ public class CartService {
         ProductEntity product = productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchElementException("Cart not found"));
 
-        if (cart != null && product != null) {
-            // Elimina el producto del carrito
-            cartProductRepository.deleteByCartAndProduct(cart, product);
-        }
-        cart.setTotalPrice(cart.getTotalPrice().subtract(product.getPrice())); // Restar al precio el producto eliminado
+        CartProductId cartProductId = new CartProductId();
+        cartProductId.setProductId(product.getId());
+        cartProductId.setCartId(cart.getCartId());
 
+        CartProduct cartProduct = cartProductRepository.findById(cartProductId)
+                .orElseThrow(() -> new NoSuchElementException("Cart not found"));
+
+        cart.setCartProducts(null);
+        cart.setTotalPrice(cart.getTotalPrice().subtract(product.getPrice())); // Restar al precio el producto eliminado
         cartRepository.save(cart);
+
+        cartProductRepository.deleteById(cartProductId);
+
     }
 
 
