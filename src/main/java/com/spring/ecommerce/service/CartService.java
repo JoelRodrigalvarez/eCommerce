@@ -3,12 +3,13 @@ package com.spring.ecommerce.service;
 import com.spring.ecommerce.entity.CartEntity;
 import com.spring.ecommerce.entity.ProductEntity;
 import com.spring.ecommerce.repository.CartRepository;
+import com.spring.ecommerce.repository.ProductRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,27 +21,42 @@ public class CartService {
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
 
-    public CartService(CartRepository cartRepository) {
+    public CartService(CartRepository cartRepository, ProductRepository productRepository) {
         this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
     }
 
-    public CartEntity createCart() {
+    /*public CartEntity createCart() {
         String cartId = generateCartId();
         CartEntity cart = new CartEntity(cartId);
         carts.put(cartId, cart);
         scheduleCartDeletion(cartId); // Programar la eliminación del carrito después de 10 minutos
         return cart;
+    }*/
+
+    public CartEntity createCart(CartEntity cart) {
+        cartRepository.save(cart);
+        scheduleCartDeletion(cart.getCartId());
+        return ResponseEntity.ok(cart).getBody();
+    }
+
+    public List<CartEntity> getAllCarts() {
+        return cartRepository.findAll();
     }
 
     public CartEntity getCartById(String cartId) {
-        return carts.get(cartId);
+        return cartRepository.findById(cartId)
+                .orElseThrow(() -> new NoSuchElementException("Cart not found"));
     }
 
     public void addProductToCart(String cartId, ProductEntity product) {
-        CartEntity cart = carts.get(cartId);
+        CartEntity cart = getCartById(cartId);
         if (cart != null) {
             cart.addProduct(product);
+            /*productRepository.save(product);
+            cartRepository.save(cart);*/
         }
     }
 
@@ -52,9 +68,6 @@ public class CartService {
         executorService.schedule(() -> {
             carts.remove(cartId);
         }, 10, TimeUnit.MINUTES);
-    }
-    private String generateCartId() {
-        return UUID.randomUUID().toString();
     }
 
     public void deleteProductFromCart(String cartId, Long productId) {

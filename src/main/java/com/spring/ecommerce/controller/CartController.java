@@ -2,10 +2,14 @@ package com.spring.ecommerce.controller;
 
 import com.spring.ecommerce.entity.CartEntity;
 import com.spring.ecommerce.entity.ProductEntity;
+import com.spring.ecommerce.repository.CartRepository;
 import com.spring.ecommerce.service.CartService;
 import com.spring.ecommerce.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/carts")
@@ -13,16 +17,25 @@ public class CartController {
 
     private final CartService cartService;
     private final ProductService productService;
-
-    public CartController(CartService cartService, ProductService productService) {
+    private final CartRepository cartRepository;
+    @Autowired
+    public CartController(CartService cartService, ProductService productService, CartRepository cartRepository) {
         this.cartService = cartService;
         this.productService = productService;
+        this.cartRepository = cartRepository;
     }
 
-    @PostMapping
-    public ResponseEntity<CartEntity> createCart() {
-        CartEntity cart = cartService.createCart();
-        return ResponseEntity.ok(cart);
+    @GetMapping("/all")
+    public Iterable<CartEntity> getAllCarts() {
+        List<CartEntity> carts = cartService.getAllCarts();
+        return ResponseEntity.ok(carts).getBody();
+    }
+    @PostMapping("/new")
+    public ResponseEntity<CartEntity> createCart(@RequestBody String cartId) {
+        CartEntity createdCart = new CartEntity();
+        createdCart.setCartId(cartId);
+        cartService.createCart(createdCart);
+        return ResponseEntity.ok(createdCart);
     }
 
     @GetMapping("/{cartId}")
@@ -38,7 +51,7 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/products/{productId}")
-    public ResponseEntity<Void> addProductToCart(@PathVariable String cartId, @PathVariable Long productId) {
+    public ResponseEntity<CartEntity> addProductToCart(@PathVariable String cartId, @PathVariable Long productId) {
         ProductEntity product = productService.getProductById(productId);
         cartService.addProductToCart(cartId, product);
         return ResponseEntity.ok().build();

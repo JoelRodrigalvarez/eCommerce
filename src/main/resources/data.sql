@@ -12,6 +12,6 @@ CREATE TABLE PRODUCT (
 );
 
 -- Inserts para la tabla PRODUCT
-INSERT INTO PRODUCT (description, price) VALUES ('Producto 1', 10.50);
-INSERT INTO PRODUCT (description, price) VALUES ('Producto 2', 15.75);
-INSERT INTO PRODUCT (description, price) VALUES ('Producto 3', 5.99);
+INSERT INTO PRODUCT (id,description, price) VALUES (1,'Producto 1', 10.50);
+INSERT INTO PRODUCT (id,description, price) VALUES (2,'Producto 2', 15.75);
+INSERT INTO PRODUCT (id,description, price) VALUES (3,'Producto 3', 5.99);

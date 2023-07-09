@@ -36,6 +36,7 @@ public class CartEntity {
         }
         products.add(product);
         product.setCart(this);
+
         updateTotalPrice(); // Actualizar el precio total al agregar un producto
     }
 
@@ -45,6 +46,7 @@ public class CartEntity {
             for (ProductEntity product : products) {
                 totalPrice = totalPrice.add(product.getPrice()); // Sumar el precio de cada producto al precio total
             }
+
         }
     }
 
